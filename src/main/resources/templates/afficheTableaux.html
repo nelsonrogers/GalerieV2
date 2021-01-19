@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Les Tableaux</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" href="../static/css/style.css"/>
+    </head>
+    <body>
+        <h1>Les Tableaux</h1>
+        <!--/* On appelle l'URL 'add' du contôleur */-->
+        <a th:href="@{add}" href='formulaireTableau.html'>Ajouter un tableau</a>
+        <!--/* On affiche un éventuel message d'erreur */-->
+        <h3 th:text="${message}">Message de succès ou d'erreur</h3>
+        <table>
+            <tr><th>Titre</th><th>Support</th><th>Dimension</th><th>Auteur</th><th>Action</th></tr>	
+                <tr th:each="t : ${tableaux}">
+                        <td th:text="${t.titre}">La Joconde</td>
+                        <td th:text="${t.support}">Huile sur toile</td>
+                        <td th:text="${t.dimension}">1m x 2m</td>
+                        <td th:text="${auteurs.get(t.id)}">Leonard DeVinci</td>
+                        <td><a th:href="@{delete(id=${t.id})}">Supprimer le tableau n° [[${t.id}]]</a></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tableaux)}">
+                        <td colspan="5">Aucun tableau à afficher</td>
+                </tr>
+        </table>
+        <hr/>
+        <a th:href="@{/}" href="/">Retour au menu</a>
+    </body>
+</html>

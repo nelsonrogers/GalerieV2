@@ -23,7 +23,7 @@ public class GalerieController {
 
     @Autowired
     private GalerieRepository dao;
-
+    
     /**
      * Affiche toutes les catégories dans la base
      *

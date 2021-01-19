@@ -117,3 +117,8 @@ input[type=sumbit]:hover,
 input[type=submit]:focus{
 	background-color:limegreen;
 }
+
+select{
+   color: black;
+   background-color: white;
+}
