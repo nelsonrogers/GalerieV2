@@ -23,7 +23,8 @@ and open the template in the editor.
                         <td th:text="${t.titre}">La Joconde</td>
                         <td th:text="${t.support}">Huile sur toile</td>
                         <td th:text="${t.dimension}">1m x 2m</td>
-                        <td th:text="${auteurs.get(t.id)}">Leonard DeVinci</td>
+                        <td th:if="${t.auteur}" th:text="${t.auteur.getNom()}"></td>
+                        <td th:if="!${t.auteur}">Auteur Inconnu</td>
                         <td><a th:href="@{delete(id=${t.id})}">Supprimer le tableau n° [[${t.id}]]</a></td>
                 </tr>
                 <tr th:if="${#lists.isEmpty(tableaux)}">

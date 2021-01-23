@@ -6,10 +6,10 @@
 package galerie.controller;
 
 import galerie.dao.TableauRepository;
+import galerie.entity.Artiste;
 import galerie.entity.Tableau;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -32,34 +32,26 @@ public class TableauController {
     @Autowired
     private TableauRepository tabDAO;
     
-    private HashMap<Integer, String> nomsAuteurs;
-    private Set<Integer> cles;
-    private Set<String> valeurs;
+    private HashSet<Artiste> nomsAuteurs;
     
     @GetMapping(path = "show")
     public String afficheTousLesTableaux(Model model) {
+        // On ajoute la liste des tableaux au modele
         model.addAttribute("tableaux", tabDAO.findAll());
-        nomsAuteurs = new HashMap<>();
-        for (Tableau tableau : tabDAO.findAll()){
-            if (tableau.getAuteur() != null)
-                nomsAuteurs.put(tableau.getId(), tableau.getAuteur().getNom());
-            else
-                nomsAuteurs.put(tableau.getId(), "Auteur Inconnu");
-        }
-        model.addAttribute("auteurs", nomsAuteurs);
-        cles = nomsAuteurs.keySet();
-        valeurs = new HashSet<>();
-        for (int cle : cles){
-            valeurs.add(nomsAuteurs.get(cle));
-        }
-        model.addAttribute("valeurs", valeurs);
-        System.out.println(valeurs.toString());
         return "afficheTableaux";
     }
     
     
     @GetMapping(path = "add")
-    public String montreLeFormulairePourAjout(@ModelAttribute("tableau") Tableau tableau) {
+    public String montreLeFormulairePourAjout(@ModelAttribute("tableau") Tableau tableau, Model model) {
+        // On y associe une liste d'artistes
+        nomsAuteurs = new HashSet<>();
+        for (Tableau oeuvre : tabDAO.findAll()){
+            if (oeuvre.getAuteur() != null)
+                nomsAuteurs.add(oeuvre.getAuteur());
+        }
+        // On ajoute l'ensemble de noms d'artistes en tant que paramètre du formulaire
+        model.addAttribute("auteurs", nomsAuteurs);
         return "formulaireTableau";
     }
     
@@ -68,11 +60,19 @@ public class TableauController {
     public String ajouteLeTableauPuisMontreLaListe(Tableau tableau, RedirectAttributes redirectInfo) {
         String message;
         try {
+            // Si l'auteur est connu, on associe le tableau avec son auteur
+            if (!tableau.getAuteur().getNom().equals("Auteur Inconnu")) {
+                for (Artiste auteur : nomsAuteurs) { 
+                    if (auteur.getNom().equals(tableau.getAuteur().getNom()))
+                        tableau.setAuteur(auteur);
+                }
+            } else tableau.setAuteur(null); //Sinon, l'auteur est null
+            
             // cf. https://www.baeldung.com/spring-data-crud-repository-save
             tabDAO.save(tableau);
             message = "Le tableau '" + tableau.getTitre() + "' a été correctement enregistré";
         } catch (DataIntegrityViolationException e) {
-            // Les noms sont définis comme 'UNIQUE' 
+            // Les titres sont définis comme 'UNIQUE'
             // En cas de doublon, JPA lève une exception de violation de contrainte d'intégrité
             message = "Erreur : Le tableau '" + tableau.getTitre() + "' existe déjà";
         }

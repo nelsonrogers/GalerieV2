@@ -24,7 +24,7 @@ public class Tableau {
     @ToString.Exclude
     private Transaction vendu;    
     
-    @ManyToOne
+    @ManyToOne//(cascade = CascadeType.ALL)
     // Peut-être null
     Artiste auteur;
 

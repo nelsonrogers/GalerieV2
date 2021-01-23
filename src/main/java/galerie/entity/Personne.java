@@ -12,7 +12,7 @@ import lombok.*;
 public class Personne {
     @Id  @GeneratedValue(strategy = GenerationType.IDENTITY) 
     private Integer id;
-
+    
     @NonNull
     private String nom;
     
