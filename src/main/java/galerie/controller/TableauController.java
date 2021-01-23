@@ -8,7 +8,6 @@ package galerie.controller;
 import galerie.dao.TableauRepository;
 import galerie.entity.Artiste;
 import galerie.entity.Tableau;
-import java.util.ArrayList;
 import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -44,7 +43,7 @@ public class TableauController {
     
     @GetMapping(path = "add")
     public String montreLeFormulairePourAjout(@ModelAttribute("tableau") Tableau tableau, Model model) {
-        // On récupère les artistes connus dans un set
+        // On récupère les artistes connus et on les met dans un set
         auteurs = new HashSet<>();
         for (Tableau oeuvre : tabDAO.findAll()){
             if (oeuvre.getAuteur() != null)
