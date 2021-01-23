@@ -2,6 +2,7 @@ package galerie.entity;
 import java.util.*;
 import javax.persistence.*;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 // Un exemple d'entité
 // On utilise Lombok pour auto-générer getter / setter / toString...
@@ -24,7 +25,7 @@ public class Tableau {
     @ToString.Exclude
     private Transaction vendu;    
     
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     // Peut-être null
     Artiste auteur;
 
