@@ -31,9 +31,11 @@ and open the template in the editor.
                 </div>
                 <div class="column">
 			<label for="auteur">Choisissez un auteur:</label>
-                        <select th:field="*{auteur.nom}">
-                            <option value="Auteur Inconnu">Auteur Inconnu</option>
-                            <option th:each="auteur : ${auteurs}" th:if="${auteur}" th:value="${auteur.getNom()}" th:text="${auteur.getNom()}"></option>
+                        <select th:field="*{auteur}">
+                            <!-- Soit on choisit un artiste de la base, soit on met "auteur inconnu"-->
+                            <option value="">Auteur Inconnu</option>
+                            <!-- On parcourt le set de noms d'auteurs pour les afficher en option de la liste déroulante -->
+                            <option th:each="auteur : ${auteurs}" th:if="${auteur}" th:value="${auteur.id}" th:text="${auteur.getNom()}"></option>
 			</select>
                 </div>
                 <input type="submit" value="Enregistrer" /> <input type="reset" value="Réinitialiser" />

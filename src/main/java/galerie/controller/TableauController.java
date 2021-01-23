@@ -32,7 +32,7 @@ public class TableauController {
     @Autowired
     private TableauRepository tabDAO;
     
-    private HashSet<Artiste> nomsAuteurs;
+    private HashSet<Artiste> auteurs;
     
     @GetMapping(path = "show")
     public String afficheTousLesTableaux(Model model) {
@@ -44,14 +44,14 @@ public class TableauController {
     
     @GetMapping(path = "add")
     public String montreLeFormulairePourAjout(@ModelAttribute("tableau") Tableau tableau, Model model) {
-        // On y associe une liste d'artistes
-        nomsAuteurs = new HashSet<>();
+        // On récupère les artistes connus dans un set
+        auteurs = new HashSet<>();
         for (Tableau oeuvre : tabDAO.findAll()){
             if (oeuvre.getAuteur() != null)
-                nomsAuteurs.add(oeuvre.getAuteur());
+                auteurs.add(oeuvre.getAuteur());
         }
         // On ajoute l'ensemble de noms d'artistes en tant que paramètre du formulaire
-        model.addAttribute("auteurs", nomsAuteurs);
+        model.addAttribute("auteurs", auteurs);
         return "formulaireTableau";
     }
     
@@ -60,14 +60,6 @@ public class TableauController {
     public String ajouteLeTableauPuisMontreLaListe(Tableau tableau, RedirectAttributes redirectInfo) {
         String message;
         try {
-            // Si l'auteur est connu, on associe le tableau avec son auteur
-            if (!tableau.getAuteur().getNom().equals("Auteur Inconnu")) {
-                for (Artiste auteur : nomsAuteurs) { 
-                    if (auteur.getNom().equals(tableau.getAuteur().getNom()))
-                        tableau.setAuteur(auteur);
-                }
-            } else tableau.setAuteur(null); //Sinon, l'auteur est null
-            
             // cf. https://www.baeldung.com/spring-data-crud-repository-save
             tabDAO.save(tableau);
             message = "Le tableau '" + tableau.getTitre() + "' a été correctement enregistré";
